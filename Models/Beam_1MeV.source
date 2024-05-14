@@ -1,0 +1,35 @@
+# Beam file for cosima
+Version         1
+Geometry        /home/yoda/gumgbs/Models/Model.geo.setup
+
+# Physics list
+PhysicsListEM                        Livermore
+PhysicsListEMActivateFluorescence    true
+
+# Output formats
+StoreSimulationInfo                all
+StoreCalibrated                    true
+StoreScientific                    true  5
+StoreSimulationInfoIonization      false
+DiscretizeHits                     true
+#StoreOnlyTriggeredEvents		   true
+StoreSimulationInfoWatchedVolumes  CsI_Cube
+
+DefaultRangeCut 0.01
+
+CheckForOverlaps 1000 0.0001
+
+
+##################################################################################
+# Run1 parameters: Energy=1000keV theta=0, phi=0
+Run BeamTest
+BeamTest.FileName                      /home/yoda/gumgbs/Sims/E1MeV_Theta0_Phi0						
+BeamTest.NTriggers                     1000 									
+#BeamTest.Time                          100.0 									
+
+BeamTest.Source homogeneousBeamSource
+homogeneousBeamSource.ParticleType      1
+homogeneousBeamSource.Beam              HomogeneousBeam 0 0 100 0 0 -1 0.5  	
+homogeneousBeamSource.Spectrum          Mono  1000.0  							
+homogeneousBeamSource.Flux              10.0  									
+

@@ -1,0 +1,52 @@
+Name XGIS
+Verision 1.0
+
+//Include ../materials/Materials.geo
+Include $(MEGALIB)/resource/examples/geomega/materials/Materials.geo
+
+DefaultRangeCut 0.000002
+
+SurroundingSphere 300.0  0.0  0.0  0.0  300.0
+
+# Create the world volume
+Volume WorldVolume
+WorldVolume.Material Vacuum
+WorldVolume.Visibility 0
+WorldVolume.Color 0
+WorldVolume.Shape BRIK 500. 500. 500.
+WorldVolume.Mother 0
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+# Single CsI bar (1.0 cm x 1.0 cm x 1.0 cm)
+Volume CsI_Cube
+CsI_Cube.Material CsI
+CsI_Cube.Visibility 1
+CsI_Cube.Color 1
+CsI_Cube.Shape BOX 0.5 0.5 0.5
+CsI_Cube.Position 0.0 0.0 0.0
+CsI_Cube.Mother WorldVolume
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+Scintillator            dCsI
+
+dCsI.SensitiveVolume    CsI_Cube
+dCsI.DetectorVolume     CsI_Cube
+dCsI.NoiseThreshold     10
+dCsI.TriggerThreshold   35
+dCsI.EnergyResolution 	Ideal
+dCsI.FailureRate 		0.0
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+// Define a trigger which will record hits in a sensitive volume (i.e. scintillator).
+ 
+Trigger tCsI
+tCsI.TriggerByDetector true
+tCsI.Detector dCsI 1
+
+
