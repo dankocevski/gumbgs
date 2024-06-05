@@ -1,0 +1,108 @@
+
+Name HALF
+Version 1.0
+
+// Note: All units in this and all other geo.setup files are CGS
+
+Include $(MEGALIB)/resource/examples/geomega/materials/Materials.geo
+
+SurroundingSphere 300.0 0.0 0.0 0.0 300.0
+
+ShowSurroundingSphere False
+
+Constant fraction_fill 0.5 // Change this value to define the fraction of the tank filled with water
+
+
+Constant inner_radius 48.26
+Constant width 2
+Constant outer_radius {inner_radius + width}
+Constant height_tank 78.74
+Constant height_water {height_tank * fraction_fill}  // Assuming same radius of water and the tank. This is a good assumption because we are dealing with a cylindrical tank.
+
+Constant detector_half_side {5.08/2}
+Constant detector_half_thickness {0.5/2}
+
+
+Material neeru //name for H20
+neeru.Density 1 // g per cc
+
+neeru.ComponentByMass H 0.11 // 11% by mass of water is Hydrogen 
+neeru.ComponentByMass O 0.89 // The other mass if from Oxygen
+
+//AbsorptionFileDirectory ./absorptions
+
+Volume Room
+
+Room.Material Air
+Room.Visibility 0  // The zero means don't show.
+Room.Shape BRIK 1000. 1000. 1000.  // BRIK is cube. dimensions are in cm
+Room.Mother 0  // Convention to say this volume is the main volume and that it isn't located in other subvolumes
+Room.Color 1 // Color according to https://root.cern.ch/doc/master/pict1_TColor_001.png. Screenshot in the google drive under megalib stuff
+
+Volume Tank
+
+Tank.Shape TUBE inner_radius outer_radius {height_tank/2} 0. 360. // inner radius, outer radius, half height, azimutha angle start and finish
+Tank.Material Aluminium  // Material of Tank is Aluminum
+Tank.Visibility 1 // One means show the tank
+Tank.Color 46 
+Tank.Mother Room  // Tank is inside Room
+//Tank.Position 0 0 45.72
+Tank.Position 0 0 0  // Center is at origin
+
+Volume Water_tank
+
+Water_tank.Material neeru // Our material for water
+Water_tank.Shape TUBE 0 inner_radius {height_water/2} 0. 360.
+Water_tank.Visibility 1
+Water_tank.Color 4
+Water_tank.Position 0 0 {height_water/2-height_tank/2}
+Water_tank.Mother Room
+
+
+Volume detector_area  // Defining volume where our detectors are placed
+
+detector_area.Material CsI 
+detector_area.Shape BOX detector_half_side detector_half_thickness detector_half_side
+
+//detector_area.Shape BOX 5.08 0.5 5.08
+//detector_area.Shape TRD1 5.08 5.08 0.5 10.
+
+detector_area.Visibility 1
+detector_area.Color 6
+detector_area.Position 0. 0. 0
+detector_area.Mother Room
+
+detector_area.Rotate 90.0 0. 0.  // We want the detector to be parallel to the bottom wall of the Tank
+detector_area.Position 0 0 {-height_tank/2}  // Moving the crystal to the bottom of the well
+
+
+Scintillator bnc  // Defining the type of detector as a scintillator. Name bnc is chosen after the company we are going with.
+
+bnc.SensitiveVolume detector_area  // Distinction between sensitive and detector volume is not important according to Daniel. But refer to Geomega if necessary
+bnc.DetectorVolume detector_area
+bnc.NoiseThreshold 10  // The gamma ray should be atleast this many kilo eV to be picked up by the detectors
+bnc.TriggerThreshold 35  // Am a bit confused by this part.
+bnc.EnergyResolution Ideal  // Refer to geomega manual
+bnc.FailureRate 0.0  // Chance of random failure rate
+
+
+Trigger decision_rule  // Defining how we register the hit. 
+
+decision_rule.TriggerByDetector true
+decision_rule.Detector bnc 1
+
+Echo Done!  // Print out Done at the end. Useful to make sure you succesfully reached the end of reading out the file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
