@@ -1,0 +1,36 @@
+
+Version 1.0
+
+Geometry half.geo.setup
+
+PhysicsListEM Livermore
+PhysicsListEMActivateFluorescence true
+
+StoreSimulationInfo all
+StoreCalibrated true
+StoreScientific true 5
+StoreSimulationInfoIonization false
+DiscretizeHits true
+
+StoreSimulationInfoWatchedVolumes detector_area
+
+DefaultRangeCut 0.01
+CheckForOverlaps 1000 0.0001
+
+Run BeamTest
+BeamTest.FileName ../Sims/result_half  // specifying the file where to save the results of the simulations.
+
+BeamTest.NTriggers 1000  // The simulation ends when these many detections occur
+//BeamTest.Events 100000  // Simulation ends when this many number of gamma rays are produced.
+//BeamTest.Time 10 // How long in seconds to run the simulation for
+
+
+BeamTest.Source homogeneousBeamSource  // Type of beam.
+homogeneousBeamSource.ParticleType 1
+homogeneousBeamSource.Spectrum Mono 660.  // Strength of the source in keV
+homogeneousBeamSource.Beam HomogeneousBeam 0 0 60 0 0 -1 2.68097  // x,y,z of starting point of source radiation, vector directions of where the radiation should point to,  radius of the beam.
+homogeneousBeamSource.Flux 333000.0  // Number of particles produced per second.
+
+
+
+
